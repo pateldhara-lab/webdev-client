@@ -1,0 +1,24 @@
+export default function Borders() {
+  return (
+    <div id="wd-css-borders">
+      <h2>Borders</h2>
+      <p className="wd-border-fat wd-border-red wd-border-solid">
+        Solid fat red border
+      </p>
+      <p className="wd-border-thin wd-border-blue wd-border-dashed">
+        Dashed thin blue border
+      </p>
+      {/* On your own */}
+      <p className="wd-border-thin wd-border-yellow wd-border-solid">
+        My own: solid thin yellow border
+      </p>
+      {/* With AI */}
+      <p
+        id="wd-ai-border"
+        className="wd-border-fat wd-border-dashed wd-border-yellow"
+      >
+        Sample: dashed fat yellow border
+      </p>
+    </div>
+  );
+}
