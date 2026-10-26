@@ -1,4 +1,5 @@
 import Link from "next/link";
+import * as db from "../../../../database";
 
 const FIELD = "mb-4";
 const LABEL = "mb-1 block text-sm font-semibold";
@@ -9,15 +10,20 @@ export default async function AssignmentEditor({
 }: {
   params: Promise<{ cid: string; aid: string }>;
 }) {
-  const { cid } = await params;
+  const { cid, aid } = await params;
+  const assignment = db.assignments.find((a) => a._id === aid);
   const listHref = `/courses/${cid}/assignments`;
   return (
-    <div id="wd-assignments-editor" className="max-w-2xl">
+    <div id="wd-assignments-editor" key={aid} className="max-w-2xl">
       <div className={FIELD}>
         <label htmlFor="wd-name" className={LABEL}>
           Assignment Name
         </label>
-        <input id="wd-name" defaultValue="A1 - ENV + HTML" className={INPUT} />
+        <input
+          id="wd-name"
+          defaultValue={assignment?.title ?? ""}
+          className={INPUT}
+        />
       </div>
       <div className={FIELD}>
         <label htmlFor="wd-description" className={LABEL}>
@@ -26,7 +32,7 @@ export default async function AssignmentEditor({
         <textarea
           id="wd-description"
           rows={5}
-          defaultValue="The assignment is available online Submit a link to the landing page of"
+          defaultValue={assignment?.description ?? ""}
           className={INPUT}
         />
       </div>
@@ -35,7 +41,11 @@ export default async function AssignmentEditor({
           <label htmlFor="wd-points" className={LABEL}>
             Points
           </label>
-          <input id="wd-points" defaultValue={100} className={INPUT} />
+          <input
+            id="wd-points"
+            defaultValue={assignment?.points ?? 100}
+            className={INPUT}
+          />
         </div>
         <div>
           <label htmlFor="wd-group" className={LABEL}>
@@ -114,7 +124,7 @@ export default async function AssignmentEditor({
           <input
             type="date"
             id="wd-due-date"
-            defaultValue="2024-05-13"
+            defaultValue={assignment?.due}
             className={INPUT}
           />
         </div>
@@ -126,7 +136,7 @@ export default async function AssignmentEditor({
             <input
               type="date"
               id="wd-available-from"
-              defaultValue="2024-05-06"
+              defaultValue={assignment?.available}
               className={INPUT}
             />
           </div>
@@ -137,18 +147,11 @@ export default async function AssignmentEditor({
             <input
               type="date"
               id="wd-available-until"
-              defaultValue="2024-05-20"
+              defaultValue={assignment?.due}
               className={INPUT}
             />
           </div>
         </div>
-      </div>
-      {/* With AI: sample notes field */}
-      <div className={FIELD}>
-        <label htmlFor="wd-ai-editor-notes" className={LABEL}>
-          Sample notes
-        </label>
-        <textarea id="wd-ai-editor-notes" rows={3} className={INPUT} />
       </div>
       <hr className="mb-4" />
       <div className="flex justify-end gap-2">

@@ -1,21 +1,18 @@
 import { FaUserCircle } from "react-icons/fa";
+import * as db from "../../../../database";
 
-const PEOPLE = [
-  ["Tony Stark", "001234561S", "S101", "STUDENT", "2020-10-01", "10:21:32"],
-  ["Bruce Wayne", "001234562S", "S101", "STUDENT", "2020-11-02", "23:32:23"],
-  ["Steve Rogers", "001234563S", "S101", "STUDENT", "2020-10-02", "13:21:32"],
-  ["Natasha Romanoff", "001234564S", "S101", "TA", "2020-11-05", "11:22:33"],
-  // On your own: three more people
-  ["Dhara Patel", "001234565S", "S101", "STUDENT", "2020-11-06", "09:10:11"],
-  ["Peter Parker", "001234566S", "S101", "STUDENT", "2020-11-07", "14:15:16"],
-  ["Diana Prince", "001234567S", "S101", "TA", "2020-11-08", "16:17:18"],
-  // With AI: sample rows
-  ["Jane Sample", "001234568S", "S102", "STUDENT", "2020-11-09", "08:00:01"],
-  ["Alex Sample", "001234569S", "S102", "STUDENT", "2020-11-10", "08:00:02"],
-  ["Sam Sample", "001234570S", "S102", "TA", "2020-11-11", "08:00:03"],
-];
-
-export default function PeopleTable() {
+export default async function PeopleTable({
+  params,
+}: {
+  params: Promise<{ cid: string }>;
+}) {
+  const { cid } = await params;
+  const { users, enrollments } = db;
+  const enrolled = users.filter((usr) =>
+    enrollments.some(
+      (enrollment) => enrollment.user === usr._id && enrollment.course === cid,
+    ),
+  );
   return (
     <div id="wd-people-table" className="overflow-x-auto">
       <table className="w-full border-collapse text-left text-sm">
@@ -30,17 +27,18 @@ export default function PeopleTable() {
           </tr>
         </thead>
         <tbody>
-          {PEOPLE.map((p) => (
-            <tr key={p[1]} className="odd:bg-neutral-50">
-              <td className="p-2 text-nowrap">
-                <FaUserCircle className="me-2 inline text-4xl text-neutral-500" />
-                {p[0]}
+          {enrolled.map((user) => (
+            <tr key={user._id} className="odd:bg-neutral-50">
+              <td className="wd-full-name p-2 text-nowrap">
+                <FaUserCircle className="me-2 inline align-middle text-3xl text-neutral-500" />
+                <span className="wd-first-name">{user.firstName}</span>{" "}
+                <span className="wd-last-name">{user.lastName}</span>
               </td>
-              <td className="p-2">{p[1]}</td>
-              <td className="p-2">{p[2]}</td>
-              <td className="p-2">{p[3]}</td>
-              <td className="p-2">{p[4]}</td>
-              <td className="p-2">{p[5]}</td>
+              <td className="wd-login-id p-2">{user.loginId}</td>
+              <td className="wd-section p-2">{user.section}</td>
+              <td className="wd-role p-2">{user.role}</td>
+              <td className="wd-last-activity p-2">{user.lastActivity}</td>
+              <td className="wd-total-activity p-2">{user.totalActivity}</td>
             </tr>
           ))}
         </tbody>

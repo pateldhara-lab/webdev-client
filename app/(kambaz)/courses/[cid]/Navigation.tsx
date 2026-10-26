@@ -4,35 +4,39 @@ import { usePathname } from "next/navigation";
 import "../../kambaz.css";
 
 const LINKS = [
-  { path: "home", label: "Home", id: "wd-course-home-link" },
-  { path: "modules", label: "Modules", id: "wd-course-modules-link" },
-  { path: "piazza", label: "Piazza", id: "wd-course-piazza-link" },
-  { path: "zoom", label: "Zoom", id: "wd-course-zoom-link" },
-  { path: "assignments", label: "Assignments", id: "wd-course-assignments-link" },
-  { path: "quizzes", label: "Quizzes", id: "wd-course-quizzes-link" },
-  { path: "grades", label: "Grades", id: "wd-course-grades-link" },
-  { path: "people/table", label: "People", id: "wd-course-people-link" },
-];
+  { segment: "home", id: "wd-course-home-link", label: "Home" },
+  { segment: "modules", id: "wd-course-modules-link", label: "Modules" },
+  { segment: "piazza", id: "wd-course-piazza-link", label: "Piazza" },
+  { segment: "zoom", id: "wd-course-zoom-link", label: "Zoom" },
+  { segment: "assignments", id: "wd-course-assignments-link", label: "Assignments" },
+  { segment: "quizzes", id: "wd-course-quizzes-link", label: "Quizzes" },
+  { segment: "grades", id: "wd-course-grades-link", label: "Grades" },
+  { segment: "people/table", id: "wd-course-people-link", label: "People" },
+] as const;
 
 export default function CourseNavigation({ cid }: { cid: string }) {
   const pathname = usePathname() ?? "";
+  const inCourse = pathname.startsWith(`/courses/${cid}`);
   return (
     <div id="wd-courses-navigation" className="wd list-group rounded-none text-lg">
-      {LINKS.map((link) => {
-        const href = `/courses/${cid}/${link.path}`;
-        const active = pathname === href || pathname.startsWith(href + "/");
+      {LINKS.map(({ segment, id, label }) => {
+        const href = `/courses/${cid}/${segment}`;
+        const active = inCourse
+          ? pathname === href ||
+            (segment !== "home" && pathname.startsWith(href))
+          : segment === "home";
         return (
           <Link
-            key={link.path}
+            key={id}
             href={href}
-            id={link.id}
+            id={id}
             className={
               active
                 ? "list-group-item active border-0"
                 : "list-group-item border-0 text-red-600"
             }
           >
-            {link.label}
+            {label}
           </Link>
         );
       })}
